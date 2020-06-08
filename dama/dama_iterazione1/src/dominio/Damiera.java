@@ -44,19 +44,13 @@ public class Damiera {
 				
 					this.cv= new Casella(i,j,CASELLA_VUOTA);
 					caselle[i][j]=cv;
-					/*caselle[i][j].setRiga(i);
-					caselle[i][j].setColonna(j);
-					caselle[i][j].setSimbolo(CASELLA_VUOTA);*/
 				}
 			}
 			
 		}
 		for(int i=3; i<5; i++) {
 			for(int j=0; j<DIM_COLONNA; j++) {
-				if(i==3||i==4) {
-					//this.cv= new Casella(i,j,CASELLA_VUOTA);
-					caselle[i][j]=cv;
-				}
+					caselle[i][j]=cv;			
 			}
 		}
 		
@@ -66,11 +60,13 @@ public class Damiera {
 		for(int i=DIM_RIGA-1; i>=0; i--) {//caselle.lenght
 			for(int j=0; j<caselle[i].length; j++) {
    				System.out.print(caselle[i][j].toString());
+   				
    			 if(j==DIM_COLONNA -1) 
-             	System.out.println("\n");
-
+             	System.out.println(" "+i+"\n");
+   			 
 			}
 		}
+		System.out.print("A B C D E F G H\n");
 	}
 	
 }
