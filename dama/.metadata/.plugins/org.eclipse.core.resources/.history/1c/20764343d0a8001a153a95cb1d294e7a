@@ -1,0 +1,58 @@
+package dominio;
+
+
+public class Damiera {
+	private static final int DIM_RIGA = 8;
+	private static final int DIM_COLONNA = 8;
+	private static final char BIANCO = 'b';
+	private static final char NERO = 'n';
+	private static final char CASELLA_VUOTA = '.';
+	//private static Damiera singleton;
+	private static Casella [][] caselle;
+	
+	/*public static Damiera getInstance() {
+		if (singleton==null)
+			singleton=new Damiera();
+		caselle = new Casella[DIM_RIGA][DIM_COLONNA];
+		return singleton;
+	}*/
+	public Damiera () {
+		
+	}
+	
+	public void setCaselle() {
+		for(int i=1; i<=DIM_RIGA; i++) {
+			for(int j=1; j<DIM_COLONNA; j++) {
+				if((j+i)%2==0) {
+					if(i > 5) {
+						caselle[i][j].getInstance().setRiga(i);
+						caselle[i][j].getInstance().setColonna(j);
+						caselle[i][j].getInstance().setSimbolo(NERO);
+					}
+					if(i < 4) {
+						caselle[i][j].getInstance().setRiga(i);
+						caselle[i][j].getInstance().setColonna(j);
+						caselle[i][j].getInstance().setSimbolo(BIANCO);
+					}
+				}
+				else {
+					caselle[i][j].getInstance().setRiga(i);
+					caselle[i][j].getInstance().setColonna(j);
+					caselle[i][j].getInstance().setSimbolo(CASELLA_VUOTA);
+				}
+			}
+			
+		}
+	}
+	
+	public void printCaselle() {
+		for(int i=1; i<=DIM_RIGA; i++) {
+			for(int j=1; j<DIM_COLONNA; j++) {
+                if(i==DIM_RIGA) 
+                	System.out.println("\n");
+				caselle[i][j].getInstance().toString();
+			}
+		}
+	}
+	
+}

@@ -1,0 +1,10 @@
+import interfaccia.text.DamaConsole;
+public class DamaMainAppText {
+
+	public static void main(String[] args) {
+		DamaConsole g = new DamaConsole();
+		g.start();
+
+	}
+
+}

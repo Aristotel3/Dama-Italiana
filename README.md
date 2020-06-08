@@ -1,2 +1,2 @@
 # Dama-Italiana
-Universitary project developed in Java thats implementing GUI and Italian checkers. The project was developed by Giovanni Santoro and Nicola Pollino
+Universitary project developed in Java that implement Italian checkers with CLI. The project was developed by Giovanni Santoro and Nicola Pollino

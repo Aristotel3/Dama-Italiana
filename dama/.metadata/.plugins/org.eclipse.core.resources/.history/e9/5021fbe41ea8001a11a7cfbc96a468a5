@@ -1,0 +1,12 @@
+package dominio;
+
+public class Giocatore {
+String username;
+int countPedine;
+
+public Giocatore() {
+	
+}
+
+
+}

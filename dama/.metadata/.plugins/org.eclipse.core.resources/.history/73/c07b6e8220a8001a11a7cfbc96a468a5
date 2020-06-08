@@ -1,0 +1,13 @@
+package dominio;
+
+public class Giocatore {
+private String username;
+private int countPedine;
+
+public Giocatore(String name) {
+	this.username = name;
+	this.countPedine = 12;
+}
+
+
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="interfaccia.text.ComandoNuovaPartita"/>
+    <fullyQualifiedTypeName name="interfaccia.text.ComandoVisualizzaStorico"/>
+    <fullyQualifiedTypeName name="dominio.Dama"/>
+    <fullyQualifiedTypeName name="dominio.Partita"/>
+    <fullyQualifiedTypeName name="java.util.Random"/>
+    <fullyQualifiedTypeName name="java.lang.System"/>
+</qualifiedTypeNameHistroy>

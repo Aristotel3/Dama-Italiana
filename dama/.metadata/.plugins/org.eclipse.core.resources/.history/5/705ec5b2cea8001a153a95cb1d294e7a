@@ -1,0 +1,47 @@
+package dominio;
+
+public class Casella {
+	private int riga;
+	private int colonna;
+	private char simbolo;
+	private static Casella singleton;
+	
+	public Casella getInstance() { //c'era static
+		if (singleton==null)
+			singleton=new Casella();
+		return singleton;
+	}
+
+	
+
+	public int getRiga() {
+		return riga;
+	}
+
+	public void setRiga(int riga) {
+		this.riga = riga;
+	}
+
+	public int getColonna() {
+		return colonna;
+	}
+
+	public void setColonna(int colonna) {
+		this.colonna = colonna;
+	}
+
+	public int getSimbolo() {
+		return simbolo;
+	}
+
+	public void setSimbolo(char simbolo) {
+		this.simbolo = simbolo;
+	}
+	
+	public void toString(){
+		  return(System.out.print(simbolo));
+		        
+	}
+
+
+}

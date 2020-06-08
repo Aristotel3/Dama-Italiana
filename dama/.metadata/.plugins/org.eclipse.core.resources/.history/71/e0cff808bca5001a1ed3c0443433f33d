@@ -1,0 +1,5 @@
+package interfaccia.text;
+
+public class Parser {
+
+}

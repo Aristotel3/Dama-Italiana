@@ -1,0 +1,72 @@
+package dominio;
+import java.util.Random;
+import java.util.Collections;
+
+public class Partita {
+	private Giocatore[] giocatori; 
+	private int count;
+	private static final int MAX_RANGE = 10;
+	private static final int MIN_RANGE = 1;
+	private Random random;
+	private int unique_random_numbers[];
+	
+	public Partita() {
+		
+	}
+    
+	public Partita(String username1, String username2) {
+		
+		giocatori=new Giocatore[2];
+		
+		Giocatore g1=new Giocatore(username1);
+		Giocatore g2=new Giocatore(username2);
+		
+		if(insertGiocatore(g1, g2)) {
+			System.out.println("Giocatori Inseriti Con Successo :");
+			for(this.count = 0; this.count<2;this.count++) {
+			System.out.println(giocatori[count].getUsername());
+			}
+		}
+		
+		else System.out.println("Giocatori non inseriti :(");
+		sorteggio(MIN_RANGE,MAX_RANGE);
+	
+		
+	}
+	
+	private Boolean insertGiocatore(Giocatore gio1, Giocatore gio2) {
+		Boolean add=true;
+		for(this.count=0; this.count<2; this.count++) {
+		 if(count == 0)	try{
+			             this.giocatori[count] = gio1;
+			            }catch(Exception e){
+			            	add = false;
+			            }
+		 else try{
+			   this.giocatori[count] = gio2;
+		 	  }catch(Exception e) {
+		 		  add = false;
+		 	  }
+		}
+		
+		return add;
+	}
+	
+	public Giocatore getGiocatore(int index) {
+		return this.giocatori[index];
+	}
+	
+	private void sorteggio(int minRANGE,int maxRANGE) {
+		/*this.random = new Random();
+		this.numRand = random.nextInt(RANGE)+1;
+		return numRand;*/
+		this.random = new Random();
+		this.unique_random_numbers=new int[2];
+		this.count=0;
+		while (this.count < unique_random_numbers.length ) {
+		    int random_number = random.nextInt(maxRANGE - minRANGE) + minRANGE;
+		    this.unique_random_numbers[count]=random_number;
+		    count ++;
+		}
+	
+}

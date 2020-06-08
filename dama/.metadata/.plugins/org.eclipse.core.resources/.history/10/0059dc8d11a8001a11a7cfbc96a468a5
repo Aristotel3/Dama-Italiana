@@ -1,0 +1,9 @@
+package dominio;
+
+public class Giocatore {
+String username;
+
+public Giocatore(String s) {
+	this.username=s;
+}
+}
