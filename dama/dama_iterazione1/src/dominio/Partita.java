@@ -179,12 +179,10 @@ public class Partita {
 		String oread = "";
 		Casella co;
 		Casella cd;
-		boolean error=false;
-		
 		d.setTrovata(false);
 		while(d.getTrovata() == false) {
 			System.out.println(gmove.getUsername() + " seleziona la casella di origine: NUMERO_RIGA NUMERO_COLONNA");
-			oread = Parser.getInstance().read();
+			oread = gmove.inputCasella();
 			if(!oread.equals("ritiro")) {
 				String [] inputo = oread.split(" ");
 				if (oread.length() <= 3) {
@@ -193,16 +191,16 @@ public class Partita {
 						d.findCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]), gmove.getColor());
 						if(d.getTrovata() == true) { 
 							co = d.getCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]));
-							evaluateMossa(co);
+							d.evaluateMossa(co);
 							System.out.println("Orgine settata coordinate: " + oread + "\nInserisci destinazione: ");
-							dread = Parser.getInstance().read();
+							dread = gmove.inputCasella();
 							if(dread.length() <= 3) {
 								String[] inputd = dread.split(" ");
 								if(Integer.parseInt(inputd[0]) <= 7 && Integer.parseInt(inputd[0]) >= 0 && Integer.parseInt(inputd[1]) >= 0 && Integer.parseInt(inputd[1]) <= 7) {
 									d.findCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]), ".".charAt(0));
 									if(d.getTrovata() == true) {
 										cd = d.getCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]));
-										validateMossa(cd);
+										d.validateMossa(cd);
 										System.out.println("Destinazione settata coordinate: " + dread + "\nInserisci destinazione: ");
 									}
 									else System.out.println("casella non valida, riprova!");
@@ -222,7 +220,7 @@ public class Partita {
 		
 		else System.out.println("Input non valido, il primo carattere è un numero(0-7), il secondo è uno spazio, il terzo è un numero(0-7)");
 					}catch(Exception e) {
-						System.out.println("Qualcosa è andato storto, riprova");
+						d.setTrovata(false);
 					}}
 				
 				else System.out.println("Inserire solo 3 caratteri, 1: numero(0-7), 2: spazio, 3: numero(0-7), riprova!");
@@ -235,14 +233,6 @@ public class Partita {
 		
 	}
 	
-	private void evaluateMossa(Casella co) {
-		System.out.println("evaluate mossa " + co.getRiga() + co.getColonna() + co.getSimbolo());
-		
-	}
-	
-	private void validateMossa(Casella cd) {
-		System.out.println("validate mossa" + cd.getRiga() + cd.getColonna() + cd.getSimbolo());
-	}
 	
 
 }

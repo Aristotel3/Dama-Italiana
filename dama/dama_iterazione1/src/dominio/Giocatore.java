@@ -1,5 +1,7 @@
 package dominio;
 
+import interfaccia.text.Parser;
+
 public class Giocatore {
 private String username;
 private int countPedine;
@@ -7,6 +9,7 @@ private int numRand;
 private Boolean turno;
 private char color;
 private int numGiocatore;
+
 
 public Giocatore(String name) {
 	this.setUsername(name);
@@ -65,6 +68,11 @@ public String toString(){
    return("\n"+ "Giocatore "+ this.numGiocatore +": "+ this.username +"\n"+ "N° sorteggio:"+numRand +"\nPedine assegnate: "+ color +"\nN° pedine: "+countPedine+"\n");
         
 }
+
+public String inputCasella() {
+	return Parser.getInstance().read();
+}
+
 
 
 }
