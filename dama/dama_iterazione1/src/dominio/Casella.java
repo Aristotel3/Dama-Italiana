@@ -11,7 +11,7 @@ public class Casella {
 	this.simbolo=simbolo;
 	}
 
-	
+
 
 	public int getRiga() {
 		return riga;
@@ -25,11 +25,11 @@ public class Casella {
 		return colonna;
 	}
 
-	public void setColonna(int colonna) {
+	public void setColonna(char colonna) {
 		this.colonna = colonna;
 	}
 
-	public int getSimbolo() {
+	public char getSimbolo() {
 		return simbolo;
 	}
 

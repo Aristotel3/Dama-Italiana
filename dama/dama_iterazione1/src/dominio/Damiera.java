@@ -1,5 +1,5 @@
 package dominio;
-
+import dominio.Casella;
 
 public class Damiera {
 	private static final int DIM_RIGA = 8;
@@ -12,6 +12,7 @@ public class Damiera {
 	private Casella cn;
 	private Casella cb;
 	private Casella cv;
+	private boolean trovata = false;
 	
 	public static Damiera getInstance() {
 		if (singleton==null)
@@ -27,16 +28,11 @@ public class Damiera {
 					if(i > 4) { //5
 						this.cn= new Casella(i,j,NERO);
 						caselle[i][j]=cn;
-						/*caselle[i][j].setRiga(i);
-						caselle[i][j].setColonna(j);
-						caselle[i][j].setSimbolo(NERO);*/
+					
 					}
 					if(i < 3) { //4
 						this.cb= new Casella(i,j,BIANCO);
 						caselle[i][j]=cb;
-						/*caselle[i][j].setRiga(i);
-						caselle[i][j].setColonna(j);
-						caselle[i][j].setSimbolo(BIANCO);*/
 					}
 					
 				}
@@ -66,7 +62,35 @@ public class Damiera {
    			 
 			}
 		}
-		System.out.print("A B C D E F G H\n");
+		System.out.print("0 1 2 3 4 5 6 7\n");
 	}
+	
+	public boolean findCasella(int riga, int colonna, char colore) {
+		if(caselle[riga][colonna]!= null && caselle[riga][colonna].getSimbolo() == colore) { 
+			trovata = true;
+			return true;
+		
+	}
+	else {
+		trovata = false;
+		return false;
+	}
+	}
+	
+	public Casella getCasella(int riga, int colonna) {
+		return caselle[riga][colonna];
+	}
+	
+	public boolean getTrovata() {
+		return trovata;
+	}
+	
+	public void setTrovata(boolean status) {
+		if(status == false)
+			trovata = false;
+		else
+			trovata=true;
+	}
+	
 	
 }

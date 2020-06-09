@@ -53,7 +53,7 @@ public void setColor(char color) {
 	this.color = color;
 }
 
-public int getnumGiocatore(int numero) {
+public int getnumGiocatore() {
 	return numGiocatore;
 }
 

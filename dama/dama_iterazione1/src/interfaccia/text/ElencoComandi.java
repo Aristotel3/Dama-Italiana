@@ -1,6 +1,6 @@
 package interfaccia.text;
 
-class ElencoComandi {
+public class ElencoComandi {
     
 	public static final int DAMA = 0;
 	public static final int NUOVA_PARTITA = 1;

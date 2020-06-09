@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
-class Parser {
+public class Parser {
 
     private ElencoComandi comandi;
 	private static Parser singleton;

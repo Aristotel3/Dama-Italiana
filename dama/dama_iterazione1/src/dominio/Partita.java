@@ -1,5 +1,9 @@
 package dominio;
 import java.util.Random;
+
+import interfaccia.text.ElencoComandi;
+import interfaccia.text.Parser;
+
 import java.util.Collections;
 import java.util.ArrayList;
 
@@ -14,6 +18,7 @@ public class Partita {
 	private Random random;
 	private ArrayList numRandom = new ArrayList();
 	private Damiera d;
+	private boolean start = true;
 	
 	public Partita() {
 		
@@ -39,6 +44,8 @@ public class Partita {
 		
 		d.setCaselle();
 		d.printCaselle();
+		avvio_partita();
+					
 		
 	}
 	
@@ -58,6 +65,50 @@ public class Partita {
 		}
 		
 		return add;
+	}
+	
+	private void avvio_partita() {
+		String ultima_mossa;
+		if (this.giocatori[0].getnumGiocatore() == 1) {
+			doMove(this.giocatori[0]);
+			lockGiocatore(this.giocatori[0]);
+			System.out.println("Bloccato " + giocatori[0].getUsername()+ " " + giocatori[0].getTurno());
+			ultima_mossa = this.giocatori[0].getUsername();
+			System.out.println(ultima_mossa + " ultimamossa");
+			}
+		else {
+			doMove(this.giocatori[1]);
+			lockGiocatore(this.giocatori[1]);
+			System.out.println("Bloccato " + giocatori[1].getUsername()+ " " + giocatori[1].getTurno());
+			ultima_mossa = this.giocatori[1].getUsername();
+			System.out.println(ultima_mossa + " ultimamossa");
+			}	
+		
+		
+		while(start) {
+			if (ultima_mossa == this.giocatori[0].getUsername()){
+				unlockGiocatore(this.giocatori[1]);
+				System.out.println("Sbloccato " + giocatori[1].getUsername()+ " " + giocatori[1].getTurno());
+				doMove(this.giocatori[1]);
+				lockGiocatore(this.giocatori[1]);
+				System.out.println("Bloccato " + giocatori[1].getUsername()+ " " + giocatori[1].getTurno());
+				ultima_mossa = this.giocatori[1].getUsername();
+				System.out.println(ultima_mossa + " ultimamossa");
+				
+			}
+			else {
+				unlockGiocatore(this.giocatori[0]);
+				System.out.println("Sbloccato " + giocatori[0].getUsername()+ " " + giocatori[0].getTurno());
+				doMove(this.giocatori[0]);
+				lockGiocatore(this.giocatori[0]);
+				System.out.println("Bloccato " + giocatori[0].getUsername()+ " " + giocatori[0].getTurno());
+				ultima_mossa = this.giocatori[0].getUsername();
+				System.out.println(ultima_mossa + " ultimamossa");
+			}
+				}
+		System.out.println("Fine");
+
+		
 	}
 	
 	public Giocatore getGiocatore(int index) {
@@ -104,6 +155,8 @@ public class Partita {
 	        this.giocatori[0].setTurno(false);
 	        this.giocatori[0].setnumGiocatore(2);
 	    }
+	  
+	    
 	    
 	}
 	
@@ -113,4 +166,83 @@ public class Partita {
 		}
 	}
 	
+	private void lockGiocatore(Giocatore glock) {
+			glock.setTurno(false);
+	}
+	private void unlockGiocatore(Giocatore gunlock) {
+		gunlock.setTurno(true);
+		
+}
+	
+	private void doMove(Giocatore gmove) {
+		String dread = "";
+		String oread = "";
+		Casella co;
+		Casella cd;
+		boolean error=false;
+		
+		d.setTrovata(false);
+		while(d.getTrovata() == false) {
+			System.out.println(gmove.getUsername() + " seleziona la casella di origine: NUMERO_RIGA NUMERO_COLONNA");
+			oread = Parser.getInstance().read();
+			if(!oread.equals("ritiro")) {
+				String [] inputo = oread.split(" ");
+				if (oread.length() <= 3) {
+					try {
+					if(Integer.parseInt(inputo[0]) <= 7 && Integer.parseInt(inputo[0]) >= 0 && Integer.parseInt(inputo[1]) >= 0  && Integer.parseInt(inputo[1]) <= 7) {
+						d.findCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]), gmove.getColor());
+						if(d.getTrovata() == true) { 
+							co = d.getCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]));
+							evaluateMossa(co);
+							System.out.println("Orgine settata coordinate: " + oread + "\nInserisci destinazione: ");
+							dread = Parser.getInstance().read();
+							if(dread.length() <= 3) {
+								String[] inputd = dread.split(" ");
+								if(Integer.parseInt(inputd[0]) <= 7 && Integer.parseInt(inputd[0]) >= 0 && Integer.parseInt(inputd[1]) >= 0 && Integer.parseInt(inputd[1]) <= 7) {
+									d.findCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]), ".".charAt(0));
+									if(d.getTrovata() == true) {
+										cd = d.getCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]));
+										validateMossa(cd);
+										System.out.println("Destinazione settata coordinate: " + dread + "\nInserisci destinazione: ");
+									}
+									else System.out.println("casella non valida, riprova!");
+								}
+								else  
+									System.out.println("Input non valido, il primo carattere è un numero(0-7), il secondo è uno spazio, il terzo è un numer(0-7), riprova: ");
+							}
+							else {
+								System.out.println("Inserire solo 3 caratteri, 1: numero(0-7), 2: spazio, 3: numero(0-7), riprova!"); 
+								d.setTrovata(false);
+							}
+			
+						}
+						else System.out.println("casella non valida, riprova!");
+		} 
+		
+		
+		else System.out.println("Input non valido, il primo carattere è un numero(0-7), il secondo è uno spazio, il terzo è un numero(0-7)");
+					}catch(Exception e) {
+						System.out.println("Qualcosa è andato storto, riprova");
+					}}
+				
+				else System.out.println("Inserire solo 3 caratteri, 1: numero(0-7), 2: spazio, 3: numero(0-7), riprova!");
+			}else {
+					d.setTrovata(true);
+					start=false;
+				}
+		
+		}
+		
+	}
+	
+	private void evaluateMossa(Casella co) {
+		System.out.println("evaluate mossa " + co.getRiga() + co.getColonna() + co.getSimbolo());
+		
+	}
+	
+	private void validateMossa(Casella cd) {
+		System.out.println("validate mossa" + cd.getRiga() + cd.getColonna() + cd.getSimbolo());
+	}
+	
+
 }
