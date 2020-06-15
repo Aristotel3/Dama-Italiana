@@ -17,7 +17,7 @@ public Giocatore(String name) {
 }
 
 public String getUsername() {
-	return username;
+	return this.username;
 }
 
 public void setUsername(String username) {
@@ -25,7 +25,7 @@ public void setUsername(String username) {
 }
 
 public int getCountPedine() {
-	return countPedine;
+	return this.countPedine;
 }
 
 public void setCountPedine(int countPedine) {
@@ -33,7 +33,7 @@ public void setCountPedine(int countPedine) {
 }
 
 public int getNumRand() {
-	return numRand;
+	return this.numRand;
 }
 
 public void setNumRand(int num) {
@@ -41,7 +41,7 @@ public void setNumRand(int num) {
 }
 
 public Boolean getTurno() {
-	return turno;
+	return this.turno;
 }
 
 public void setTurno(Boolean turno) {
@@ -49,7 +49,7 @@ public void setTurno(Boolean turno) {
 }
 
 public char getColor() {
-	return color;
+	return this.color;
 }
 
 public void setColor(char color) {
@@ -57,7 +57,7 @@ public void setColor(char color) {
 }
 
 public int getnumGiocatore() {
-	return numGiocatore;
+	return this.numGiocatore;
 }
 
 public void setnumGiocatore(int numero) {

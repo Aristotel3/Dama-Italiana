@@ -1,9 +1,11 @@
 package dominio;
+import java.util.*; 
 
 public class Casella {
 	private int riga;
 	private int colonna;
 	private char simbolo;
+	private HashMap<String, Casella> mosse = new HashMap<String, Casella>(); 
 	
 	public Casella(int riga, int colonna, char simbolo){
 	this.riga=riga;
@@ -14,7 +16,7 @@ public class Casella {
 
 
 	public int getRiga() {
-		return riga;
+		return this.riga;
 	}
 
 	public void setRiga(int riga) {
@@ -22,7 +24,7 @@ public class Casella {
 	}
 
 	public int getColonna() {
-		return colonna;
+		return this.colonna;
 	}
 
 	public void setColonna(char colonna) {
@@ -30,7 +32,7 @@ public class Casella {
 	}
 
 	public char getSimbolo() {
-		return simbolo;
+		return this.simbolo;
 	}
 
 	public void setSimbolo(char simbolo) {
@@ -41,6 +43,21 @@ public class Casella {
 		  return(""+simbolo+" ");
 		        
 	}
+	
+	protected void setTipoMossa (String chiave, Casella cd) {
+		this.mosse.put(chiave, cd);
+	}
 
-
+	protected HashMap<String, Casella> printmap() {
+		 return this.mosse;
+	}
+	
+	protected Casella mosseget(String chiave) {
+		return this.mosse.get(chiave);
+	}
+	
+	protected void clearmosse() {
+		this.mosse.clear();
+		
+	}
 }

@@ -1,4 +1,6 @@
 package dominio;
+
+
 import dominio.Casella;
 
 public class Damiera {
@@ -8,12 +10,17 @@ public class Damiera {
 	private static final char NERO = 'n';
 	private static final char CASELLA_VUOTA = '.';
 	private static Damiera singleton;
-	private Casella [][] caselle;
+	protected Casella [][] caselle;
 	private Casella cn;
 	private Casella cb;
-	private Casella cv;
+	private Casella cv1;
+	private Casella cv2;
 	private boolean trovata = false;
 	private boolean lockMS = false;
+	protected Casella co;
+	protected Casella cd;
+	private boolean update = false;
+	
 	
 	public static Damiera getInstance() {
 		if (singleton==null)
@@ -22,41 +29,45 @@ public class Damiera {
 	}
 	
 	public void setCaselle() {
-		caselle = new Casella[DIM_RIGA][DIM_COLONNA];
+		this.caselle = new Casella[DIM_RIGA][DIM_COLONNA];
 		for(int i=0; i<DIM_RIGA; i++) {
 			for(int j=0; j<DIM_COLONNA; j++) {
 				if((j+i)%2==0) {
 					if(i > 4) { //5
 						this.cn= new Casella(i,j,NERO);
-						caselle[i][j]=cn;
+						this.caselle[i][j]=this.cn;
 					
 					}
 					if(i < 3) { //4
 						this.cb= new Casella(i,j,BIANCO);
-						caselle[i][j]=cb;
+						this.caselle[i][j]=this.cb;
 					}
-					
+					if (i==3 || i==4) {
+						this.cv1= new Casella(i,j,CASELLA_VUOTA);
+						caselle[i][j]=this.cv1;
+					}
 				}
 				else {
 				
-					this.cv= new Casella(i,j,CASELLA_VUOTA);
-					caselle[i][j]=cv;
+					this.cv2 = new Casella(i,j,CASELLA_VUOTA);
+					this.caselle[i][j]=this.cv2;
 				}
-			}
+			
 			
 		}
-		for(int i=3; i<5; i++) {
+	/*	for(int i=3; i<5; i++) {
 			for(int j=0; j<DIM_COLONNA; j++) {
 					caselle[i][j]=cv;			
 			}
 		}
-		
+		*/
+	}
 	}
 	
 	public void printCaselle() {
 		for(int i=DIM_RIGA-1; i>=0; i--) {//caselle.lenght
 			for(int j=0; j<caselle[i].length; j++) {
-   				System.out.print(caselle[i][j].toString());
+				System.out.print(this.caselle[i][j].toString());
    				
    			 if(j==DIM_COLONNA -1) 
              	System.out.println(" "+i+"\n");
@@ -67,120 +78,228 @@ public class Damiera {
 	}
 	
 	public boolean findCasella(int riga, int colonna, char colore) {
-		if(caselle[riga][colonna]!= null && caselle[riga][colonna].getSimbolo() == colore) { 
-			trovata = true;
-			return true;
-		
-	}
-	else {
-		trovata = false;
-		return false;
-	}
+				if(this.caselle[riga][colonna].getSimbolo() == colore || this.caselle[riga][colonna].getSimbolo() == Character.toUpperCase(colore)) { 
+					setTrovata(true);
+					return true;		
+			}		
+			
+				else {
+					setTrovata(false);
+					return false;
+				}
 	}
 	
 	public Casella getCasella(int riga, int colonna) {
-		return caselle[riga][colonna];
+				return this.caselle[riga][colonna];
+		
 	}
+	
 	
 	public boolean getTrovata() {
 		return trovata;
 	}
 	
+	private void setCasella(int riga, int colonna, char simbolo) {
+		this.caselle[riga][colonna].setSimbolo(simbolo);
+	}
+	
 	public void setTrovata(boolean status) {
-			trovata = status;
+		this.trovata = status;
 	}
 	
-	protected void evaluateMossa(Casella co) {
-		System.out.println("evaluate mossa " + co.getRiga() + co.getColonna() + co.getSimbolo());
-		slideupDx(co.getRiga(), co.getColonna(), co.getSimbolo());
-		slideupSx(co.getRiga(), co.getColonna(), co.getSimbolo());
-		slidedownDx(co.getRiga(), co.getColonna(), co.getSimbolo());
-		slidedownSx(co.getRiga(), co.getColonna(), co.getSimbolo());
+	protected int evaluateMossa() {
+		System.out.println("evaluate mossa " + this.co.getRiga() + this.co.getColonna() + this.co.getSimbolo());
+		int a = slideupDx();
+		int b = slideupSx();
+		int c = slidedownDx();
+		int d = slidedownSx();
+		if(a == 0 && b == 0 && c == 0 && d == 0)
+			return 0;
+		else {
+		if(a == 2 || b == 2 || c == 2 || d == 2)
+			return 2;
+		if(a == 1 || b == 1 || c == 1 || d == 1)
+			return 1;
+		
+		}
+		System.out.println("Error 45, sarebbe impossibile arrivi fino a qui la funzione?!");
+		return 45;
 	}
 	
-	protected void validateMossa(Casella cd) {
-		System.out.println("validate mossa" + cd.getRiga() + cd.getColonna() + cd.getSimbolo());
-	}
 	
 	
-	private void slideupDx(int riga, int colonna, char simbolo) {
-		if(simbolo == 'b' || simbolo == 'B' || simbolo == 'N') {
-			if(riga+1<=7 && colonna+1<=7) {
-				Casella cud = getCasella(riga+1, colonna+1);
-				if(cud.getSimbolo() == '.' && lockMS == false) {
-					settaTipoMossa(cud, "mossa sempliceDSX");
+	
+	private int slideupDx() {
+		if(this.co.getSimbolo() == 'b' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
+			if(this.co.getRiga()+1<=7 && this.co.getColonna()+1<=7) {
+				Casella cud = getCasella(this.co.getRiga()+1, this.co.getColonna()+1);
+				if(cud.getSimbolo() == '.' && this.lockMS == false) {
+					this.co.setTipoMossa("mossa sempliceUDX", cud);
+					return 1;
 				}
-				if(((simbolo == 'B'|| simbolo == 'b') && (cud.getSimbolo() == 'n' || cud.getSimbolo() == 'N') && cud.getRiga()+1 <= 7 && cud.getColonna()+1<=7) || (simbolo == 'N' && (cud.getSimbolo() == 'b' || cud.getSimbolo() == 'B') && cud.getRiga()+1 <= 7 && cud.getColonna()+1 <=7)){
+				if(((this.co.getSimbolo() == 'B'|| this.co.getSimbolo() == 'b') && (cud.getSimbolo() == 'n' || cud.getSimbolo() == 'N') && cud.getRiga()+1 <= 7 && cud.getColonna()+1<=7) || (this.co.getSimbolo() == 'N' && (cud.getSimbolo() == 'b' || cud.getSimbolo() == 'B') && cud.getRiga()+1 <= 7 && cud.getColonna()+1 <=7)){
 					Casella cud1 = getCasella(cud.getRiga()+1,cud.getColonna()+1);
 					if(cud1.getSimbolo() == '.') {
-						settaTipoMossa(cud1, "mossa con presaDDX");
+						this.co.setTipoMossa("mossa con presaUDX", cud1);
+						return 2;
 					}
 				}
 			}
 		}
+		return 0;
 		
 	}
 	
-	private void slideupSx(int riga, int colonna, char simbolo) {
-		if(simbolo == 'b' || simbolo == 'B' || simbolo == 'N') {
-			if(riga+1<=7 && colonna-1>=0) {
-				Casella cus = getCasella(riga+1, colonna-1);
-				if(cus.getSimbolo() == '.' && lockMS == false) {
-					settaTipoMossa(cus, "mossa sempliceUSX");
+	private int slideupSx() {
+		if(this.co.getSimbolo() == 'b' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
+			if(this.co.getRiga()+1<=7 && this.co.getColonna()-1>=0) {
+				Casella cus = getCasella(this.co.getRiga()+1, this.co.getColonna()-1);
+				if(cus.getSimbolo() == '.' && this.lockMS == false) {
+					this.co.setTipoMossa("mossa sempliceUSX", cus);
+					return 1;
 				}
-				if(((simbolo == 'B'|| simbolo == 'b') && (cus.getSimbolo() == 'n' || cus.getSimbolo() == 'N') && cus.getRiga()+1 <= 7 && cus.getColonna()-1>=0) || (simbolo == 'N' && (cus.getSimbolo() == 'b' || cus.getSimbolo() == 'B') && cus.getRiga()+1 <= 7 && cus.getColonna()-1 >=0)){
+				if(((this.co.getSimbolo() == 'B'|| this.co.getSimbolo() == 'b') && (cus.getSimbolo() == 'n' || cus.getSimbolo() == 'N') && cus.getRiga()+1 <= 7 && cus.getColonna()-1>=0) || (this.co.getSimbolo() == 'N' && (cus.getSimbolo() == 'b' || cus.getSimbolo() == 'B') && cus.getRiga()+1 <= 7 && cus.getColonna()-1 >=0)){
 					Casella cus1 = getCasella(cus.getRiga()+1,cus.getColonna()-1);
 					if(cus1.getSimbolo() == '.') {
-						settaTipoMossa(cus1, "mossa con presaUSX");
+						this.co.setTipoMossa("mossa con presaUSX", cus1);
+						return 2;
 					}
 				}
 			}
 		}
+		return 0;
 	}
 
-	private void slidedownDx(int riga, int colonna, char simbolo) {
-		if(simbolo == 'n' || simbolo == 'B' || simbolo == 'N') {
-			if(riga-1>=0 && colonna+1<=7) {
-				Casella cdd = getCasella(riga-1, colonna+1);
-				if(cdd.getSimbolo() == '.' && lockMS == false) {
-					settaTipoMossa(cdd, "mossa sempliceDDX");
+	private int slidedownDx() {
+		if(this.co.getSimbolo() == 'n' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
+			if(this.co.getRiga()-1>=0 && this.co.getColonna()+1<=7) {
+				Casella cdd = getCasella(this.co.getRiga()-1, this.co.getColonna()+1);
+				if(cdd.getSimbolo() == '.' && this.lockMS == false) {
+					this.co.setTipoMossa("mossa sempliceDDX", cdd);
+					return 1;
 				}
-				if(((simbolo == 'N'|| simbolo == 'n') && (cdd.getSimbolo() == 'b' || cdd.getSimbolo() == 'B') && cdd.getRiga()-1 >= 0 && cdd.getColonna()+1<=7) || (simbolo == 'B' && (cdd.getSimbolo() == 'n' || cdd.getSimbolo() == 'N') && cdd.getRiga()-1 >= 0 && cdd.getColonna()+1 <=7)){
+				if(((this.co.getSimbolo() == 'N'|| this.co.getSimbolo() == 'n') && (cdd.getSimbolo() == 'b' || cdd.getSimbolo() == 'B') && cdd.getRiga()-1 >= 0 && cdd.getColonna()+1<=7) || (this.co.getSimbolo() == 'B' && (cdd.getSimbolo() == 'n' || cdd.getSimbolo() == 'N') && cdd.getRiga()-1 >= 0 && cdd.getColonna()+1 <=7)){
 					Casella cdd1 = getCasella(cdd.getRiga()-1,cdd.getColonna()+1);
 					if(cdd1.getSimbolo() == '.') {
-						settaTipoMossa(cdd1, "mossa con presaDDX");
+						this.co.setTipoMossa("mossa con presaDDX", cdd1);
+						return 2;
 					}
 				}
 			}
 		}
+		return 0;
 	}
 
-	private void slidedownSx(int riga, int colonna, char simbolo) {
-		if(simbolo == 'n' || simbolo == 'B' || simbolo == 'N') {
-			if(riga-1>=0 && colonna-1>=0) {
-				Casella cds = getCasella(riga-1, colonna-1);
-				if(cds.getSimbolo() == '.' && lockMS == false) {
-					settaTipoMossa(cds, "mossa sempliceDSX");
+	private int slidedownSx() {
+		if(this.co.getSimbolo() == 'n' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
+			if(this.co.getRiga()-1>=0 && this.co.getColonna()-1>=0) {
+				Casella cds = getCasella(this.co.getRiga()-1, this.co.getColonna()-1);
+				if(cds.getSimbolo() == '.' && this.lockMS == false) {
+					this.co.setTipoMossa("mossa sempliceDSX", cds);
+					return 1;
 				}
-				if(((simbolo == 'N'|| simbolo == 'n') && (cds.getSimbolo() == 'b' || cds.getSimbolo() == 'B') && cds.getRiga()-1 >= 0 && cds.getColonna()-1>=0) || (simbolo == 'B' && (cds.getSimbolo() == 'n' || cds.getSimbolo() == 'N') && cds.getRiga()-1 >= 0 && cds.getColonna()-1 >=0)){
+				if(((this.co.getSimbolo() == 'N'|| this.co.getSimbolo() == 'n') && (cds.getSimbolo() == 'b' || cds.getSimbolo() == 'B') && cds.getRiga()-1 >= 0 && cds.getColonna()-1>=0) || (this.co.getSimbolo() == 'B' && (cds.getSimbolo() == 'n' || cds.getSimbolo() == 'N') && cds.getRiga()-1 >= 0 && cds.getColonna()-1 >=0)){
 					Casella cds1 = getCasella(cds.getRiga()-1,cds.getColonna()-1);
 					if(cds1.getSimbolo() == '.') {
-						settaTipoMossa(cds1, "mossa con presaDSX");
+						this.co.setTipoMossa("mossa con presaDSX", cds1);
+						return 2;
 					}
 				}
 			}
 		}
+		return 0;
 	}
 	
-	private void settaTipoMossa(Casella c, String chiave) {
-		
-	}
 	
-	private void setlockMS(boolean statlockMS) {
-		lockMS = statlockMS;
+	
+	protected void setlockMS(boolean lockMS) {
+		this.lockMS = lockMS;
 	}
 	
 	public boolean getlockMS() {
 		return lockMS;
 	}
+	
+	protected int scrollMosse() {
+		if(this.co.printmap().containsKey("mossa con presaUDX") || this.co.printmap().containsKey("mossa con presaUSX") || this.co.printmap().containsKey("mossa con presaDDX") || this.co.printmap().containsKey("mossa con presaDSX")) {
+			setlockMS(true);
+			setUpdate(false);
+			if(this.cd == this.co.mosseget("mossa con presaUDX")) {
+				Casella cud = getCasella(this.co.getRiga()+1, this.co.getColonna()+1);
+				this.co.clearmosse();
+				updateDamiera(cud);
+			//	evaluateMossa();
+			}
+			if(this.cd == this.co.mosseget("mossa con presaUSX")) {
+				Casella cus = getCasella(this.co.getRiga()+1, this.co.getColonna()-1);
+				this.co.clearmosse();
+				updateDamiera(cus);
+			//	setlockMS(true);
+			//	evaluateMossa();
+			}
+			if(this.cd == this.co.mosseget("mossa con presaDDX")) {
+				Casella cdd = getCasella(this.co.getRiga()-1, this.co.getColonna()+1);
+				this.co.clearmosse();
+				updateDamiera(cdd);
+			//	setlockMS(true);
+			//	evaluateMossa();
+			}
+			if(this.cd == this.co.mosseget("mossa con presaDSX")) {
+				Casella cds = getCasella(co.getRiga()-1, this.co.getColonna()-1);
+				this.co.clearmosse();
+				updateDamiera(cds);
+			//	setlockMS(true);
+			//	evaluateMossa();
+			}
+			return 2;
+	
+		}
+		else {
+			if(this.co.printmap().containsKey("mossa sempliceUDX") || this.co.printmap().containsKey("mossa sempliceUSX") || this.co.printmap().containsKey("mossa sempliceDDX") || this.co.printmap().containsKey("mossa sempliceDSX")) {
+				setUpdate(false);
+				if(this.cd == this.co.mosseget("mossa sempliceUDX") || this.cd == this.co.mosseget("mossa sempliceUSX") || this.cd == this.co.mosseget("mossa sempliceDDX") || this.cd == this.co.mosseget("mossa sempliceDSX")){
+					this.co.clearmosse();
+					updateDamiera(null);
+			}
+				return 1;
+		}
+		}
+		return 0;
+	
+	}
+	
+	protected boolean getUpdate() {
+		return this.update;
+	}
+	
+	protected void setUpdate(boolean update) {
+		this.update = update;
+	}
+	
+	private void become_dama(char simbolo) {
+		setCasella(this.cd.getRiga(), this.cd.getColonna(), simbolo);
+	}
+	
+	protected void updateDamiera(Casella cm) {
+		if(this.cd.getRiga() == 7 || this.cd.getRiga() == 0) {
+			if(this.cd.getRiga() == 7 && this.co.getSimbolo() == 'b')
+				become_dama('B');
+			if(this.cd.getRiga() == 0 && this.co.getSimbolo() == 'n')
+				become_dama('N');
+			if(this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N')
+				setCasella(this.cd.getRiga(), this.cd.getColonna(), this.co.getSimbolo());
+		}
+		else
+			setCasella(this.cd.getRiga(), this.cd.getColonna(), this.co.getSimbolo());
+		setCasella(this.co.getRiga(), this.co.getColonna(), '.');
+		if(cm!=null) {
+			setCasella(cm.getRiga(), cm.getColonna(), '.');
+			this.co = getCasella(this.cd.getRiga(), this.cd.getColonna());
+			//this.cd = null;
+		}
+		
+		//printCaselle();
+		setUpdate(true);
+	}
+	
 }
