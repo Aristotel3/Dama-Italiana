@@ -1,5 +1,5 @@
 package dominio;
-
+import java.util.Collection;
 
 import dominio.Casella;
 
@@ -10,15 +10,15 @@ public class Damiera {
 	private static final char NERO = 'n';
 	private static final char CASELLA_VUOTA = '.';
 	private static Damiera singleton;
-	protected Casella [][] caselle;
+	private Casella [][] caselle;
 	private Casella cn;
 	private Casella cb;
 	private Casella cv1;
 	private Casella cv2;
 	private boolean trovata = false;
 	private boolean lockMS = false;
-	protected Casella co;
-	protected Casella cd;
+	public Casella co;
+	public Casella cd;
 	private boolean update = false;
 	
 	
@@ -27,10 +27,10 @@ public class Damiera {
 			singleton=new Damiera();
 		return singleton;
 	}
-	
-	public void setCaselle() {
-		this.caselle = new Casella[DIM_RIGA][DIM_COLONNA];
-		for(int i=0; i<DIM_RIGA; i++) {
+		
+	public void setCaselle() {	
+	 this.caselle = new Casella[DIM_RIGA][DIM_COLONNA];
+		for(int i=0; i<DIM_RIGA; i++) {	
 			for(int j=0; j<DIM_COLONNA; j++) {
 				if((j+i)%2==0) {
 					if(i > 4) { //5
@@ -54,14 +54,14 @@ public class Damiera {
 				}
 			
 			
-		}
-	/*	for(int i=3; i<5; i++) {
-			for(int j=0; j<DIM_COLONNA; j++) {
-					caselle[i][j]=cv;			
 			}
+
 		}
-		*/
 	}
+	
+	public Casella[] getRigaCaselle(int riga) {	//Per il test
+			return caselle[riga];
+		
 	}
 	
 	public void printCaselle() {
@@ -77,11 +77,15 @@ public class Damiera {
 		System.out.print("0 1 2 3 4 5 6 7\n");
 	}
 	
+	public void setLockMS(boolean status) {
+		this.lockMS = status;
+	}
+	
 	public boolean findCasella(int riga, int colonna, char colore) {
-				if(this.caselle[riga][colonna].getSimbolo() == colore || this.caselle[riga][colonna].getSimbolo() == Character.toUpperCase(colore)) { 
+				if((riga>=0 && riga <=7 && colonna >=0 && colonna<=7)&&(this.caselle[riga][colonna].getSimbolo() == colore || this.caselle[riga][colonna].getSimbolo() == Character.toUpperCase(colore)))   { 
 					setTrovata(true);
 					return true;		
-			}		
+				}		
 			
 				else {
 					setTrovata(false);
@@ -90,16 +94,19 @@ public class Damiera {
 	}
 	
 	public Casella getCasella(int riga, int colonna) {
+			if(riga>=0 && riga<=7 && colonna>=0 && colonna<=7)
 				return this.caselle[riga][colonna];
+			else
+				return null;
 		
 	}
 	
 	
 	public boolean getTrovata() {
-		return trovata;
+		return this.trovata;
 	}
 	
-	private void setCasella(int riga, int colonna, char simbolo) {
+	public void setCasella(int riga, int colonna, char simbolo) {
 		this.caselle[riga][colonna].setSimbolo(simbolo);
 	}
 	
@@ -107,7 +114,7 @@ public class Damiera {
 		this.trovata = status;
 	}
 	
-	protected int evaluateMossa() {
+	public int evaluateMossa() {
 		System.out.println("evaluate mossa " + this.co.getRiga() + this.co.getColonna() + this.co.getSimbolo());
 		int a = slideupDx();
 		int b = slideupSx();
@@ -220,7 +227,7 @@ public class Damiera {
 		return lockMS;
 	}
 	
-	protected int scrollMosse() {
+	public int scrollMosse() {
 		if(this.co.printmap().containsKey("mossa con presaUDX") || this.co.printmap().containsKey("mossa con presaUSX") || this.co.printmap().containsKey("mossa con presaDDX") || this.co.printmap().containsKey("mossa con presaDSX")) {
 			setlockMS(true);
 			setUpdate(false);
@@ -268,7 +275,7 @@ public class Damiera {
 	
 	}
 	
-	protected boolean getUpdate() {
+	public boolean getUpdate() {
 		return this.update;
 	}
 	
@@ -276,11 +283,12 @@ public class Damiera {
 		this.update = update;
 	}
 	
+	
 	private void become_dama(char simbolo) {
 		setCasella(this.cd.getRiga(), this.cd.getColonna(), simbolo);
 	}
 	
-	protected void updateDamiera(Casella cm) {
+	public void updateDamiera(Casella cm) {
 		if(this.cd.getRiga() == 7 || this.cd.getRiga() == 0) {
 			if(this.cd.getRiga() == 7 && this.co.getSimbolo() == 'b')
 				become_dama('B');
@@ -298,8 +306,7 @@ public class Damiera {
 			//this.cd = null;
 		}
 		
-		//printCaselle();
+	//	printCaselle();
 		setUpdate(true);
 	}
-	
 }

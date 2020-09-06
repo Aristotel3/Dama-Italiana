@@ -24,12 +24,9 @@ public class ComandoNuovaPartita implements Comando {
 	}
 
     public void esegui(Dama dama) {
-    	System.out.println("   Inserisci nome Giocatore :");	
-		String username1 = Parser.getInstance().read();
-		System.out.println("   Inserisci nome Giocatore : ");
-		String username2 = Parser.getInstance().read();
-		System.out.println();
-		p= new Partita(username1,username2);	
+    	
+		dama.startPartita();
+		
 	}
     
 }

@@ -19,7 +19,7 @@ public class ComandoEsci implements Comando{
 
 	@Override
 	public void esegui(Dama dama) {
-		//torna al menu precedente oppure esce se non ci sono menu precedenti
+		System.out.println("   BYE...");
 		
 	}
 

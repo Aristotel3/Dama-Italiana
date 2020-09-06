@@ -7,6 +7,14 @@ import interfaccia.text.Parser;
 import java.util.Collections;
 import java.util.ArrayList;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.PrintWriter;
+
 public class Partita {
 	private static final int MAX_RANGE = 10;
 	private static final int MIN_RANGE = 1;
@@ -15,16 +23,18 @@ public class Partita {
 	private static final char NERO = 'n';
 	private Giocatore[] giocatori; 
 	private int count;
+	private Giocatore gwin;
+	private Giocatore glose;
 	private Random random;
-	private ArrayList numRandom = new ArrayList();
+	private ArrayList<Integer> numRandom = new ArrayList<Integer>();
 	private Damiera d;
 	private boolean start = true;
 	
-	public Partita() {
+//	public Partita() {
 		
-	}
+//	}
     
-	public Partita(String username1, String username2) {
+	public Partita(String username1, String username2, boolean test) {
 		
 		this.d= new Damiera();
 		
@@ -32,35 +42,61 @@ public class Partita {
 		
 		Giocatore g1=new Giocatore(username1);
 		Giocatore g2=new Giocatore(username2);
-		
+		if(test == true) {
+			try {
+				this.giocatori[0]=g1;
+				this.giocatori[1]=g2;
+			}catch(Exception e) {
+				System.err.println("Errore nel setting dei giocatori");
+				return;
+			}
+		}
+		else {
 		if(insertGiocatore(g1, g2)) {
 			System.out.println("Giocatori Inseriti Con Successo:");
 		}	
 		else System.out.println("Giocatori Non Inseriti :(");
+		
 		
 		sorteggio(MIN_RANGE,MAX_RANGE);
 		
 		printGiocatori();
 		
 		this.d.setCaselle();
-		
 		this.d.printCaselle();
 		
-		avvio_partita();
-					
+			gestione_turno();
+			System.out.println("Fine");
+			}
+	//	avvio();
 		
 	}
 	
-	private Boolean insertGiocatore(Giocatore gio1, Giocatore gio2) {
+	
+	public boolean getStart() {
+		return this.start;
+	}
+	
+	public void setStart(boolean status) {
+		this.start = status;
+	}
+	
+	
+	
+	public Damiera getDamiera() {
+		return this.d;
+	}
+	
+	public Boolean insertGiocatore(Giocatore gio1, Giocatore gio2) {
 		Boolean add=true;
-		for(this.count=0; this.count<2; this.count++) {
-		 if(this.count == 0)try{
-			             this.giocatori[count] = gio1;
+		for(int countx=0; countx<2; countx++) {
+		 if(countx == 0)	try{
+			           		this.giocatori[countx] = gio1;
 			            }catch(Exception e){
 			            	add = false;
 			            }
 		 else try{
-			   this.giocatori[count] = gio2;
+			 	this.giocatori[countx] = gio2;
 		 	  }catch(Exception e) {
 		 		  add = false;
 		 	  }
@@ -69,64 +105,94 @@ public class Partita {
 		return add;
 	}
 	
-	private void avvio_partita() {
-		String ultima_mossa;
-		if (this.giocatori[0].getnumGiocatore() == 1) {
-			doMove(this.giocatori[0]);
-			lockGiocatore(this.giocatori[0]);
-			System.out.println("\nBloccato " + this.giocatori[0].getUsername()+ " " + this.giocatori[0].getTurno());
-			ultima_mossa = this.giocatori[0].getUsername();
-			System.out.println(ultima_mossa + " ultimamossa");
+	public void switchGiocatore(Giocatore gswitchON, Giocatore gswitchOFF) {
+		lockGiocatore(gswitchOFF);
+		System.out.println("Bloccato " + gswitchOFF.getUsername()+ " " + gswitchOFF.getTurno());
+		unlockGiocatore(gswitchON);
+		System.out.println("Sbloccato " + gswitchON.getUsername()+ " " + gswitchON.getTurno());
+		
+	}
+	/*
+	private void openFile() {
+		try {
+			File file = new File("./storico.txt");
+			if (!file.exists())
+				file.createNewFile();
+			} catch (IOException e) {
+			e.printStackTrace();
 			}
+		
+	}
+	*/
+	
+	public void gestione_turno() {
+		while(this.start == true) {
+		if(this.giocatori[0].getTurno() == true) {
+			turno(this.giocatori[0], this.giocatori[1]);
+			switchGiocatore(this.giocatori[1], this.giocatori[0]);
+		}
 		else {
-			doMove(this.giocatori[1]);
-			lockGiocatore(this.giocatori[1]);
-			System.out.println("\nBloccato " + this.giocatori[1].getUsername()+ " " + this.giocatori[1].getTurno());
-			ultima_mossa = this.giocatori[1].getUsername();
-			System.out.println(ultima_mossa + " ultimamossa\n");
-			}	
-		
-		
-		while(start) {
-			if (ultima_mossa == this.giocatori[0].getUsername()){
-				this.d.printCaselle();
-				//System.out.print("\nGiocatore " + this.giocatori[1].getUsername() + " Pedine " + this.giocatori[1].getColor() + " numero pedine " + this.giocatori[1].getCountPedine());
-				unlockGiocatore(this.giocatori[1]);
-				System.out.print("\nSbloccato " + this.giocatori[1].getUsername()+ " " + this.giocatori[1].getTurno());
-				doMove(this.giocatori[1]);
-				this.d.setlockMS(false);
-				lockGiocatore(this.giocatori[1]);
-				System.out.print("\nBloccato " + this.giocatori[1].getUsername()+ " " + this.giocatori[1].getTurno());
-				ultima_mossa = this.giocatori[1].getUsername();
-				System.out.println(ultima_mossa + " ultimamossa");
-				
+			turno(this.giocatori[1], this.giocatori[0]);
+			switchGiocatore(this.giocatori[0], this.giocatori[1]);
+		}
+		}
+
+	}
+	
+	public void turno(Giocatore gmove, Giocatore gstop) {
+		int control = gmove.doMove(this.d);
+		if(control != 0 && control !=2)
+			validateMossa();
+		else {
+			if(control == 0) {
+				win(gstop, gmove);
+				return;
 			}
 			else {
-				this.d.printCaselle();
-				//System.out.print("\nGiocatore " + this.giocatori[0].getUsername() + " Pedine " + this.giocatori[0].getColor() + " numero pedine " + this.giocatori[0].getCountPedine());
-				unlockGiocatore(this.giocatori[0]);
-				System.out.print("\nSbloccato " + this.giocatori[0].getUsername()+ " " + this.giocatori[0].getTurno());
-				doMove(this.giocatori[0]);
-				this.d.setlockMS(false);
-				lockGiocatore(this.giocatori[0]);
-				System.out.print("\nBloccato " + this.giocatori[0].getUsername()+ " " + this.giocatori[0].getTurno());
-				ultima_mossa = this.giocatori[0].getUsername();
-				System.out.println(ultima_mossa + " ultimamossa");
+				if(proposePareggio(gmove, gstop))
+					return;
+				else {
+					turno(gmove, gstop);
+					return;
+		}
 			}
 		}
-		System.out.println("\nFine");
+			
+		this.d.setlockMS(false);
+		System.out.println("ultima mossa fatta da " + gmove.getUsername());
+		this.d.printCaselle();
+		
 
 		
 	}
 	
+	public boolean proposePareggio(Giocatore gmove, Giocatore gstop) {
+		System.out.println("Pareggio proposto da " + gmove.getUsername() + "\n" + gstop.getUsername() + " digita 1 per accettare, 2 per rifiutare");
+		String response = gstop.inputCasella();
+		if(response.equals("1")) {
+			System.out.println("Partita terminata in pareggio");
+			//updateStorico();
+			this.start = false;
+			return true;
+	}
+		else {
+			if(response.equals("2")) {
+				System.out.println("Pareggio rifiutato");
+				this.start = true;
+				return false;
+			}
+			else {
+				System.out.println("Scelta non valida, riprova!");
+				return proposePareggio(gmove, gstop);
+			}
+		}
+	
+	}
 	public Giocatore getGiocatore(int index) {
 		return this.giocatori[index];
 	}
 
-	private void sorteggio(int minRANGE,int maxRANGE) {
-		/*this.random = new Random();
-		this.numRand = random.nextInt(RANGE)+1;
-		return numRand;*/
+	public void sorteggio(int minRANGE,int maxRANGE) {
 		this.random = new Random();
 		this.count=0;
 		while (this.count < ARRAYLIST_SIZE ) {
@@ -168,7 +234,7 @@ public class Partita {
 	    
 	}
 	
-	private void printGiocatori() {
+	private void printGiocatori() {	
 		for(this.count=0; this.count<2; this.count++) {
 			System.out.println(this.giocatori[count].toString());
 		}
@@ -181,154 +247,117 @@ public class Partita {
 		gunlock.setTurno(true);
 		
 }
-	
-	private void doMove(Giocatore gmove) {
-		this.d.setTrovata(false);
-		while(this.d.getTrovata() == false) {
-			selectorigine(gmove);
-			if(this.start == false) return;
-			selectdestinazione(gmove);	
-		}
-		
-	}
-	
-	private void selectorigine(Giocatore gmove) {
-		System.out.println("\n"+gmove.getUsername() + " con Pedine: ["+gmove.getColor()+"]\n"+"Numero pedine " + gmove.getCountPedine()+"\nseleziona la casella di origine: NUMERO_RIGA NUMERO_COLONNA");
-		String oread = gmove.inputCasella();
-		if(!oread.equals("ritiro")) {
-			String [] inputo = oread.split(" ");
-			if (oread.length() <= 3) {
-				try {
-				if(Integer.parseInt(inputo[0]) <= 7 && Integer.parseInt(inputo[0]) >= 0 && Integer.parseInt(inputo[1]) >= 0  && Integer.parseInt(inputo[1]) <= 7) {
-					this.d.findCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]), gmove.getColor());
-					if(this.d.getTrovata() == true) { 
-						this.d.co = this.d.getCasella(Integer.parseInt(inputo[0]), Integer.parseInt(inputo[1]));
-						 if(this.d.evaluateMossa()==0) {
-						  System.out.println("Non hai mosse disponibili, riprova!");
-						  selectorigine(gmove);
-						  return;
-					    }
-					}
-					else {
-						System.out.println("casella non valida, riprova!");
-						selectorigine(gmove);
-						return;
-					}
-				}
-				else {
-					this.d.setTrovata(false);
-					System.out.println("Input non valido, il primo carattere è un numero(0-7), il secondo è uno spazio, il terzo è un numero(0-7)");
-					selectorigine(gmove);
-					return;
-				}		}
-				catch(Exception e) {
-					this.d.setTrovata(false);
-					selectorigine(gmove);
-					return;
-				}
-		}
-		  else {
-		   this.d.setTrovata(false);
-		   System.out.println("Inserire solo 3 caratteri, 1: numero(0-7), 2: spazio, 3: numero(0-7), riprova!");
-		   selectorigine(gmove);
-		   return;
-		  }	
-		}
-		else {
-		this.d.setTrovata(true);
-		this.start=false;
-		if(gmove.getUsername().equals(this.giocatori[0].getUsername()))
-		      win(gmove, this.giocatori[1]);
-		    else
-		      win(this.giocatori[0],gmove);
-		}
-		
-			
-	}
-	
-	
-	private void selectdestinazione(Giocatore gmove) {
-		System.out.println("\n"+gmove.getUsername() + " seleziona la casella di destinazione: NUMERO_RIGA NUMERO_COLONNA");
-		String dread = gmove.inputCasella();
-		if(!dread.equals("ritiro")) {
-			String [] inputd = dread.split(" ");
-			if (dread.length() <= 3){
-				try {
-				if(Integer.parseInt(inputd[0]) <= 7 && Integer.parseInt(inputd[0]) >= 0 && Integer.parseInt(inputd[1]) >= 0  && Integer.parseInt(inputd[1]) <= 7) {
-					this.d.findCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]), '.');
-					 if(d.getTrovata() == true) { 
-						this.d.cd = this.d.getCasella(Integer.parseInt(inputd[0]), Integer.parseInt(inputd[1]));
-						validateMossa();
-						return;
-					 }
-					 else {
-						System.out.println("casella non valida, riprova!");
-						selectdestinazione(gmove);
-						return;								
-					 }
-					}
-				 else{ 
-					this.d.setTrovata(false);
-					System.out.println("Input non valido, il primo carattere è un numero(0-7), il secondo è uno spazio, il terzo è un numero(0-7)");
-					selectdestinazione(gmove);
-					return;
-				 }	
-				}
-				catch(Exception e) {
-					this.d.setTrovata(false);
-					selectdestinazione(gmove);
-					return;				
-				}
+	/*
+	private String readFile(String usernameW, String usernameL) {
+		char[] in = new char[50];
+		try {
+		File file = new File("./storico.txt");
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		br.read(in);
+		String [] righe = in.toString().split("\n");
+		int num_righe = righe.length;
+		br.close();
+		for(int i = 0; i<num_righe; i++) {
+			if(usernameW.equals(righe[i].split(" ")[1])) {
+				int vittorie = Integer.parseInt(righe[i].split(" ")[3]) + 1;
+				int partite = Integer.parseInt(righe[i].split(" ")[2]) + 1;
+				righe[i].split(" ")[2] = String.valueOf(partite);
+				righe[i].split(" ")[3] = String.valueOf(vittorie);
+			}if(usernameL.equals(righe[i].split(" ")[1])) { 
+				int sconfitte = Integer.parseInt(righe[i].split(" ")[4]) + 1;
+				int partite = Integer.parseInt(righe[i].split(" ")[2]) + 1;
+				righe[i].split(" ")[2] = String.valueOf(partite);
+				righe[i].split(" ")[4] = String.valueOf(sconfitte);
 			}
-		    else {
-		     this.d.setTrovata(false);
-		     System.out.println("Inserire solo 3 caratteri, 1: numero(0-7), 2: spazio, 3: numero(0-7), riprova!");
-		     selectdestinazione(gmove);
-		     return;
-		   }
-	   }
-		else {
-		 this.d.setTrovata(true);
-		 this.start=false;
-		 if(gmove.getUsername().equals(this.giocatori[0].getUsername()))
-		      win(gmove, this.giocatori[1]);
-		    else
-		      win(this.giocatori[0],gmove);
 		}
+		return righe.toString();
+		}
+		 catch(IOException e) {
+		e.printStackTrace();
+		}
+		return null;
 		
-			
+		
 	}
 	
-		
 	
-	private void validateMossa() { 
+	
+	
+	
+	private void updateStorico(Giocatore gwin, Giocatore glose) {
+		String righe = readFile(gwin.getUsername(), glose.getUsername());
+		try {
+		File file = new File("./storico.txt");
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		if (righe[0] == null)
+			bw.append(righe);
+		bw.write("Questo è il nostro primo file");
+		bw.flush();
+		bw.close();
+		}
+		catch(IOException e) {
+		e.printStackTrace();
+		}
+	}
+	
+	*/
+	
+	public Giocatore getWinner() {
+		if(this.gwin != null)
+			return gwin;
+		return null;
+	}
+	
+	public Giocatore getLoser() {
+		if(this.glose != null)
+			return glose;
+		return null;
+	}
+	
+	public void win(Giocatore gwinner, Giocatore gloser) {
+		this.start = false;
+		gwin = gwinner;
+		glose = gloser;
+		System.out.println("Giocatore vincente " + gwinner.getUsername() + "Giocatore perdente " + gloser.getUsername());
+	}
+	
+	public void validateMossa() { 
 		int mosse = this.d.scrollMosse();
 		if(mosse == 2) {
 			if(this.d.getUpdate()==false) {
-				if(this.giocatori[0].getTurno() == true)
-					selectdestinazione(this.giocatori[0]);
-				else
-					selectdestinazione(this.giocatori[1]);
+				if(this.giocatori[0].getTurno() == true) {
+					this.giocatori[0].selectDestinazione(this.d);
+					validateMossa();
+				}
+				else {
+					this.giocatori[1].selectDestinazione(this.d);
+					validateMossa();
+				}
 				return;
 				}
 			else {
 				this.d.printCaselle();
 				if(this.giocatori[0].getTurno() == true) {
 					this.giocatori[1].setCountPedine(this.giocatori[1].getCountPedine()-1);
-					if(this.giocatori[1].getCountPedine()==0) {
-						win(this.giocatori[0],this.giocatori[1]);
+					if(this.giocatori[1].getCountPedine() == 0) {
+						win(this.giocatori[0], this.giocatori[1]);
 						return;
 					}
 				}
 				else {
 					this.giocatori[0].setCountPedine(this.giocatori[0].getCountPedine()-1);
-					if(this.giocatori[0].getCountPedine()==0) {
-						win(this.giocatori[1],this.giocatori[0]);
+					if(this.giocatori[0].getCountPedine() == 0) {
+						win(this.giocatori[1], this.giocatori[0]);
 						return;
 					}
 				}
-				if(this.d.evaluateMossa() == 2)
+				if(this.d.evaluateMossa() == 2) {
 					validateMossa();
+					return; //
+				}
+				this.d.setUpdate(false);  ///aggiunta ora
 				return;
 			}
 		}
@@ -339,37 +368,32 @@ public class Partita {
 					return;
 				}
 				else {
-					if(this.giocatori[0].getTurno() == true)
-						selectdestinazione(this.giocatori[0]);
-					else
-						selectdestinazione(this.giocatori[1]);
+					if(this.giocatori[0].getTurno() == true) {
+						this.giocatori[0].selectDestinazione(this.d);
+						validateMossa();
+					}
+					else {
+						this.giocatori[1].selectDestinazione(this.d);
+						validateMossa();
+					}
 					return;
 				}
 			}
 			if(mosse == 0) {
-			if(this.d.getUpdate() == true) {
 				this.d.setUpdate(false);
 				return;
-			}
-			else {
-				if(this.giocatori[0].getTurno() == true)
-					doMove(this.giocatori[0]);
-				else
-					doMove(this.giocatori[1]);
-				return;
-			}
 			}
 			
 		}
 					
 			
 	}
-	
-	private void win(Giocatore gwin, Giocatore glose) {
-	    this.start = false;
-	    System.out.println("\nVince giocatore " + gwin.getUsername());
-	  }
 			
+				
+				
+	
+	
+
 			
 }
-		
+

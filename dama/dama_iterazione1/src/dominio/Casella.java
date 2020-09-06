@@ -17,6 +17,7 @@ public class Casella {
 
 	public int getRiga() {
 		return this.riga;
+		
 	}
 
 	public void setRiga(int riga) {
@@ -27,7 +28,7 @@ public class Casella {
 		return this.colonna;
 	}
 
-	public void setColonna(char colonna) {
+	public void setColonna(int colonna) {
 		this.colonna = colonna;
 	}
 
@@ -44,15 +45,15 @@ public class Casella {
 		        
 	}
 	
-	protected void setTipoMossa (String chiave, Casella cd) {
+	public void setTipoMossa (String chiave, Casella cd) {
 		this.mosse.put(chiave, cd);
 	}
 
-	protected HashMap<String, Casella> printmap() {
+	public HashMap<String, Casella> printmap() {
 		 return this.mosse;
 	}
 	
-	protected Casella mosseget(String chiave) {
+	public Casella mosseget(String chiave) {
 		return this.mosse.get(chiave);
 	}
 	
