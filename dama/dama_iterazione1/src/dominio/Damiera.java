@@ -1,6 +1,4 @@
 package dominio;
-import java.util.Collection;
-
 import dominio.Casella;
 
 public class Damiera {
@@ -9,7 +7,7 @@ public class Damiera {
 	private static final char BIANCO = 'b';
 	private static final char NERO = 'n';
 	private static final char CASELLA_VUOTA = '.';
-	private static Damiera singleton;
+	private static Damiera istance = null;
 	private Casella [][] caselle;
 	private Casella cn;
 	private Casella cb;
@@ -21,12 +19,18 @@ public class Damiera {
 	public Casella cd;
 	private boolean update = false;
 	
+	private Damiera(){
+		setCaselle();
+	}
 	
 	public static Damiera getInstance() {
-		if (singleton==null)
-			singleton=new Damiera();
-		return singleton;
+		if (istance==null)
+			istance=new Damiera();
+		return istance;
 	}
+	public static void deleteInstance(){
+	     istance=null;
+	  }
 		
 	public void setCaselle() {	
 	 this.caselle = new Casella[DIM_RIGA][DIM_COLONNA];
@@ -114,29 +118,12 @@ public class Damiera {
 		this.trovata = status;
 	}
 	
-	public int evaluateMossa() {
-		System.out.println("evaluate mossa " + this.co.getRiga() + this.co.getColonna() + this.co.getSimbolo());
-		int a = slideupDx();
-		int b = slideupSx();
-		int c = slidedownDx();
-		int d = slidedownSx();
-		if(a == 0 && b == 0 && c == 0 && d == 0)
-			return 0;
-		else {
-		if(a == 2 || b == 2 || c == 2 || d == 2)
-			return 2;
-		if(a == 1 || b == 1 || c == 1 || d == 1)
-			return 1;
-		
-		}
-		System.out.println("Error 45, sarebbe impossibile arrivi fino a qui la funzione?!");
-		return 45;
-	}
 	
 	
 	
 	
-	private int slideupDx() {
+	
+	public int slideupDx() {
 		if(this.co.getSimbolo() == 'b' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
 			if(this.co.getRiga()+1<=7 && this.co.getColonna()+1<=7) {
 				Casella cud = getCasella(this.co.getRiga()+1, this.co.getColonna()+1);
@@ -157,7 +144,7 @@ public class Damiera {
 		
 	}
 	
-	private int slideupSx() {
+	public int slideupSx() {
 		if(this.co.getSimbolo() == 'b' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
 			if(this.co.getRiga()+1<=7 && this.co.getColonna()-1>=0) {
 				Casella cus = getCasella(this.co.getRiga()+1, this.co.getColonna()-1);
@@ -177,7 +164,7 @@ public class Damiera {
 		return 0;
 	}
 
-	private int slidedownDx() {
+	public int slidedownDx() {
 		if(this.co.getSimbolo() == 'n' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
 			if(this.co.getRiga()-1>=0 && this.co.getColonna()+1<=7) {
 				Casella cdd = getCasella(this.co.getRiga()-1, this.co.getColonna()+1);
@@ -197,7 +184,7 @@ public class Damiera {
 		return 0;
 	}
 
-	private int slidedownSx() {
+	public int slidedownSx() {
 		if(this.co.getSimbolo() == 'n' || this.co.getSimbolo() == 'B' || this.co.getSimbolo() == 'N') {
 			if(this.co.getRiga()-1>=0 && this.co.getColonna()-1>=0) {
 				Casella cds = getCasella(this.co.getRiga()-1, this.co.getColonna()-1);
@@ -219,7 +206,7 @@ public class Damiera {
 	
 	
 	
-	protected void setlockMS(boolean lockMS) {
+	public void setlockMS(boolean lockMS) {
 		this.lockMS = lockMS;
 	}
 	
@@ -235,28 +222,26 @@ public class Damiera {
 				Casella cud = getCasella(this.co.getRiga()+1, this.co.getColonna()+1);
 				this.co.clearmosse();
 				updateDamiera(cud);
-			//	evaluateMossa();
+				
+		
 			}
 			if(this.cd == this.co.mosseget("mossa con presaUSX")) {
 				Casella cus = getCasella(this.co.getRiga()+1, this.co.getColonna()-1);
 				this.co.clearmosse();
 				updateDamiera(cus);
-			//	setlockMS(true);
-			//	evaluateMossa();
+				
 			}
 			if(this.cd == this.co.mosseget("mossa con presaDDX")) {
 				Casella cdd = getCasella(this.co.getRiga()-1, this.co.getColonna()+1);
 				this.co.clearmosse();
 				updateDamiera(cdd);
-			//	setlockMS(true);
-			//	evaluateMossa();
+				
 			}
 			if(this.cd == this.co.mosseget("mossa con presaDSX")) {
 				Casella cds = getCasella(co.getRiga()-1, this.co.getColonna()-1);
 				this.co.clearmosse();
 				updateDamiera(cds);
-			//	setlockMS(true);
-			//	evaluateMossa();
+				
 			}
 			return 2;
 	
@@ -267,6 +252,7 @@ public class Damiera {
 				if(this.cd == this.co.mosseget("mossa sempliceUDX") || this.cd == this.co.mosseget("mossa sempliceUSX") || this.cd == this.co.mosseget("mossa sempliceDDX") || this.cd == this.co.mosseget("mossa sempliceDSX")){
 					this.co.clearmosse();
 					updateDamiera(null);
+					
 			}
 				return 1;
 		}
@@ -279,7 +265,7 @@ public class Damiera {
 		return this.update;
 	}
 	
-	protected void setUpdate(boolean update) {
+	public void setUpdate(boolean update) {
 		this.update = update;
 	}
 	
@@ -288,7 +274,7 @@ public class Damiera {
 		setCasella(this.cd.getRiga(), this.cd.getColonna(), simbolo);
 	}
 	
-	public void updateDamiera(Casella cm) {
+	public int updateDamiera(Casella cm) {
 		if(this.cd.getRiga() == 7 || this.cd.getRiga() == 0) {
 			if(this.cd.getRiga() == 7 && this.co.getSimbolo() == 'b')
 				become_dama('B');
@@ -303,10 +289,11 @@ public class Damiera {
 		if(cm!=null) {
 			setCasella(cm.getRiga(), cm.getColonna(), '.');
 			this.co = getCasella(this.cd.getRiga(), this.cd.getColonna());
-			//this.cd = null;
+		
 		}
 		
-	//	printCaselle();
+
 		setUpdate(true);
+		return 1;
 	}
 }

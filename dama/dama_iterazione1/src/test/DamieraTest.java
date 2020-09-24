@@ -1,6 +1,15 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -8,11 +17,13 @@ import org.junit.jupiter.api.Test;
 import dominio.Casella;
 //import dominio.Giocatore;
 import dominio.Damiera;
+import dominio.Giocatore;
 
 //import interfaccia.text.Parser;
 
 class DamieraTest {
-    static Damiera d = new Damiera();
+    static Damiera d = Damiera.getInstance();
+    public Giocatore g = new Giocatore("nico",d, 'b');
 
 	@BeforeAll
 	static void setup() throws Exception{
@@ -33,105 +44,127 @@ class DamieraTest {
 	@Test
 	void testFindCasella() {
 		char cb='b';
-		int [] in= {2,0, 12, 0};
-		
-	//	char cn='n';
-		//int [] in= {5,0};
+		char cn= 'n';
+		char cp='.';
+		int [] in= {0, 0, 7, 0, 7, 7, 0, 7, 42, 1, 3, 3};
+	
 		for(int i=0; i<in.length; i+=2) {
-			if(i == 0) {
+			switch(i) {
+			case 0:
 				assertTrue(d.findCasella(in[i],in[i+1],cb));
 				assertTrue(d.getTrovata());
-				}
-			if(i==2) {
-				assertFalse(d.findCasella(in[i], in[i+1],cb)); //ERRORE
+				break;
+			case 2:
+				assertTrue(d.findCasella(in[i],in[i+1],cp));
+				assertTrue(d.getTrovata());
+				break;
+			case 4:
+				assertTrue(d.findCasella(in[i],in[i+1],cn));
+				assertTrue(d.getTrovata());
+				break;
+			case 6:
+				assertTrue(d.findCasella(in[i], in[i+1],cp)); 
+				assertTrue(d.getTrovata());
+				break;
+			case 8:
+				assertFalse(d.findCasella(in[i],in[i+1],cb)); //ERRORE
 				assertFalse(d.getTrovata());
+				break;
+			case 10:
+				assertTrue(d.findCasella(in[i], in[i+1],cp)); 
+				assertTrue(d.getTrovata());
+				break;
 			}
+			
 		}
 		
 	}
 
 	@Test
 	void testGetCasella() {
-		int [] in = {2, 0, 18, 9};
+		int [] in= {0, 0, 7, 0, 7, 7, 0, 7, 42, 1, 3, 3};
+		
 		for(int i=0; i<in.length; i+=2) {
-			if(i==0)
-				assertNotNull(d.getCasella(in[i], in[i+1]));
-			if(i==2)
-				assertNull(d.getCasella(in[i], in[i+1]));
-	}
+			switch(i) {
+			case 0:
+				assertNotNull(d.getCasella(in[i],in[i+1]));
+				break;
+			case 2:
+				assertNotNull(d.getCasella(in[i],in[i+1]));
+				break;
+			case 4:
+				assertNotNull(d.getCasella(in[i],in[i+1]));
+				break;
+			case 6:
+				assertNotNull(d.getCasella(in[i], in[i+1])); 
+				break;
+			case 8:
+				assertNull(d.getCasella(in[i],in[i+1])); //ERRORE
+				break;
+			case 10:
+				assertNotNull(d.getCasella(in[i], in[i+1])); 
+				break;
+			}
+			
+		}
 	}
 
-	@Test
-	void ztestEvaluateMossa() {
-		int [] in = {2, 0, 0, 0, 2, 6};
-		d.setCasella(3, 1, 'n');
-		d.setCasella(3, 3, 'n');
-		d.printCaselle();
-		for (int i=0; i<in.length; i+=2) {
-		d.co = d.getCasella(in[i], in[i+1]);
-		if(i==0)
-			assertEquals(2, d.evaluateMossa());
-		if(i==2)
-			assertEquals(0, d.evaluateMossa());
-		if(i==4)
-			assertEquals(1, d.evaluateMossa());
-	}
-	}
+
 
 	@Test
 	void testScrollMosse() {
-		int [] in = {2, 0, 2, 6, 0, 0};
+		int [] in = {2, 4, 2, 0, 2, 6, 0, 0}; //caselle origine
+		int [] out = {3, 5, 4, 2, 3, 7, 0, 0}; //caselle destinazione
 		d.setCasella(3, 1, 'n');
+		d.setCasella(5, 3, '.');
 		d.setCasella(3, 3, 'n');
+		d.setCasella(5, 1, '.');
 		d.printCaselle();
 		for(int i=0; i<in.length; i+=2) {
+		d.setlockMS(false);
+		d.setUpdate(false);
 		d.co = d.getCasella(in[i], in[i+1]);
-		d.cd = d.getCasella(1, 1);
-		d.evaluateMossa();
-		if(i==0)
-			assertEquals(2, d.scrollMosse());
-		if(i==2)
-			assertEquals(1, d.scrollMosse());
-		if(i==4)
-			assertEquals(0, d.scrollMosse());
+		d.cd = d.getCasella(out[i], out[i+1]);
+		g.evaluateMossa(); //inserisco per ogni casella d'origine le possibili destinazioni che vengono salvate nelle mappe
+		if(i==0) {
+			assertEquals(2, d.scrollMosse()); //caso mossa con presa ma viene selezionata una mossa semplice
+			assertEquals(false, d.getUpdate()); //non viene aggiornata la damiera perchè DEVE essere effettuata una mossa con presa
+		}
+		if(i==2) {
+			assertEquals(2, d.scrollMosse()); //caso mossa con presa
+			assertEquals(true, d.getUpdate()); //corretto aggiornamento di damiera
+		}
+		if(i==4) {
+			assertEquals(1, d.scrollMosse()); //caso mossa semplice
+			assertEquals(true, d.getUpdate());//corretto aggiornamento di damiera
+		}
+		if(i == 6) {
+			assertEquals(0, d.scrollMosse()); //caso mosse non disponibile
+			assertEquals(false, d.getUpdate()); //nessun aggiornamento di damiera
+		}
+	
 		}
 	}
 
 	@Test
 	void testUpdateDamiera() {
-		int [] in = {2, 4, 2, 2, 2, 6, 0, 0};
-		int [] on = {3, 5, 4, 0, 3, 7, 1, 1};
+		int [] in = {2, 4, 2, 2, 2, 6, 0, 0}; //caselle origine
+		int [] on = {3, 5, 4, 0, 3, 7, 1, 1}; //caselle destinazione
 		d.setCasella(3, 1, 'n');
+		d.setCasella(5, 3, '.');
 		d.setCasella(3, 3, 'n');
+		d.setCasella(5, 1, '.');
 		d.printCaselle();
+		Casella cm = null;
 		for(int i=0; i<in.length; i+=2) {
+			d.setUpdate(false);
 			d.co = d.getCasella(in[i], in[i+1]);
 			d.cd = d.getCasella(on[i], on[i+1]);
-			d.evaluateMossa();
-			if(d.co.printmap().containsKey("mossa con presaUDX") || d.co.printmap().containsKey("mossa con presaUSX") || d.co.printmap().containsKey("mossa con presaDDX") || d.co.printmap().containsKey("mossa con presaDSX")) {
-				if(d.cd == d.co.mosseget("mossa con presaUDX") || d.cd == d.co.mosseget("mossa con presaUSX") || d.cd == d.co.mosseget("mossa con presaDDX") || d.cd == d.co.mosseget("mossa con presaDSX")) {
-					d.scrollMosse();
-					assertTrue(d.getUpdate());
-				}
-				else {
-					d.scrollMosse();
-					assertFalse(d.getUpdate());
-				}
-				
-	}
-			else {
-			if(d.co.printmap().containsKey("mossa sempliceUDX") || d.co.printmap().containsKey("mossa sempliceUSX") || d.co.printmap().containsKey("mossa sempliceDDX") || d.co.printmap().containsKey("mossa sempliceDSX")) {
-				if(d.cd == d.co.mosseget("mossa sempliceUDX") || d.cd == d.co.mosseget("mossa sempliceUSX") || d.cd == d.co.mosseget("mossa sempliceDDX") || d.cd == d.co.mosseget("mossa sempliceDSX")) {
-					d.scrollMosse();
-					assertTrue(d.getUpdate());
-				}	
-				else {
-					d.scrollMosse();
-					assertFalse(d.getUpdate());
-			}
-			}
-		
-			}
+			if (i==2)
+				cm = d.getCasella(3, 1);
+			assertEquals(1,d.updateDamiera(cm));
+			assertEquals(true, d.getUpdate());
+			cm = null;
 		}
 }
 

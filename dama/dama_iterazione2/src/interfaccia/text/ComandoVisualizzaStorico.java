@@ -15,7 +15,7 @@ public class ComandoVisualizzaStorico implements Comando{
 	}
 
     public void esegui(Dama dama) {
-		System.out.println("   Ciao");	
+		dama.viewStorico();
 		
 	}
 

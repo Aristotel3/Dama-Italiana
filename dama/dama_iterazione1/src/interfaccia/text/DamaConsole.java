@@ -14,7 +14,7 @@ public class DamaConsole {
 			stampaBenvenuto();
 			comando = Parser.getInstance().getComando(ElencoComandi.DAMA);
 		}
-		comando.esegui(dama); // cdr= dama sicuramente è il comando esci
+		comando.esegui(dama); // dama sicuramente è il comando esci
 		
 	}
 

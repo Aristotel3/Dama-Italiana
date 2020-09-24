@@ -57,7 +57,7 @@ public class Casella {
 		return this.mosse.get(chiave);
 	}
 	
-	protected void clearmosse() {
+	public void clearmosse() {
 		this.mosse.clear();
 		
 	}

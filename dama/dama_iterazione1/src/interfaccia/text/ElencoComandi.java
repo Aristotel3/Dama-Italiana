@@ -5,41 +5,22 @@ public class ElencoComandi {
 	public static final int DAMA = 0;
 	public static final int NUOVA_PARTITA = 1;
 	public static final int VISUALIZZA_STORICO = 2;
-	//public static final int NUOVA_COLAZIONE = 3;
+	
 	
 	/* MENU' PRINCIPALE */
     private static final String comandiValidiDamaConsole[][] = {
-		/*{ComandoElencaTipiColazione.codiceComando,ComandoElencaTipiColazione.descrizioneComando},
-		{ComandoNuovoTipoColazione.codiceComando,ComandoNuovoTipoColazione.descrizioneComando},
-		{ComandoNuovoOrdine.codiceComando,ComandoNuovoOrdine.descrizioneComando},
-		{ComandoEsci.codiceComando, ComandoEsci.descrizioneComando}*/
-    		{ComandoNuovaPartita.codiceComando,ComandoNuovaPartita.descrizioneComando},
-    		{ComandoVisualizzaStorico.codiceComando,ComandoVisualizzaStorico.descrizioneComando},
+			{ComandoNuovaPartita.codiceComando,ComandoNuovaPartita.descrizioneComando},
+    		
     		{ComandoEsci.codiceComando, ComandoEsci.descrizioneComando}
     };
 	
 	/* USE CASE 1 : INSERIMENTO NUOVA PARTITA */
-	private static final String comandiValidiNuovaPartitaConsole[][] = { //comandiValidiNuovoTipoColazioneConsole[][]
-	 /*{ComandoAggiungiComponenteColazione.codiceComando, ComandoAggiungiComponenteColazione.descrizioneComando},
-		{ComandoDefinisciPrezzo.codiceComando, ComandoDefinisciPrezzo.descrizioneComando},
-		{ComandoConfermaTipoColazione.codiceComando, ComandoConfermaTipoColazione.descrizioneComando},
-	*/
+	private static final String comandiValidiNuovaPartitaConsole[][] = { 
+	 
 		{ComandoEsci.codiceComando, ComandoEsci.descrizioneComando}
 	};
 	
-	/* USE CASE 2 : NUOVO ORDINE 
-	private static final String comandiValidiNuovoOrdineConsole[][] = {
-			{ComandoNuovaColazione.codiceComando,ComandoNuovaColazione.descrizioneComando},
-		{ComandoDefinisciModoServizio.codiceComando,ComandoDefinisciModoServizio.descrizioneComando},
-		{ComandoAssociaOrdineCliente.codiceComando,ComandoAssociaOrdineCliente.descrizioneComando},
-		{ComandoConfermaOrdine.codiceComando,ComandoConfermaOrdine.descrizioneComando},
-		{ComandoEsci.codiceComando, ComandoEsci.descrizioneComando}
-	};*/
 	
-   /* USE CASE 2 : NUOVA COLAZIONE 
-	private static final String comandiValidiNuovaColazioneConsole[][] = {
-		{ComandoEsci.codiceComando,ComandoEsci.descrizioneComando}
-	};*/
 	
    public static String elencoTuttiComandi(int console){
     	int i=0;
@@ -67,8 +48,7 @@ public class ElencoComandi {
 		switch (console){
 			case DAMA: comandi = comandiValidiDamaConsole; break;
 			case NUOVA_PARTITA: comandi = comandiValidiNuovaPartitaConsole; break;
-			//case VISUALIZZA_STORICO: comandi = comandiValidiNuovoOrdineConsole; break;
-			//case NUOVA_COLAZIONE: comandi = comandiValidiNuovaColazioneConsole; break;
+			
 		};
 		return comandi;
 	}
