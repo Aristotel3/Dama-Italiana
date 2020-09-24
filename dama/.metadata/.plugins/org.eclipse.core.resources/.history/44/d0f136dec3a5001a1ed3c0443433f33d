@@ -1,9 +1,0 @@
-package dominio;
-
-public class Dama {
-Partita p;
-
-	Dama(){
-	p=new Partita();
-	}
-}

@@ -1,4 +1,0 @@
-INDEX VERSION 1.131+/home/giovanni/dama/.metadata/.plugins/org.eclipse.jdt.core
-2414430318.index
-4171179919.index
-3329141625.index
