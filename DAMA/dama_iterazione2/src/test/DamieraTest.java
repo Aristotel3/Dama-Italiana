@@ -11,9 +11,7 @@ import dominio.Casella;
 //import dominio.Giocatore;
 import dominio.Damiera;
 import dominio.Giocatore;
-import dominio.Casella;
-import dominio.Subject;
-import dominio.Observer;
+
 
 
 //import interfaccia.text.Parser;

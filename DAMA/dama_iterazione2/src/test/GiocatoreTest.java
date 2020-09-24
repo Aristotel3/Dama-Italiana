@@ -10,8 +10,6 @@ import org.junit.Test;
 import dominio.Casella;
 import dominio.Damiera;
 import dominio.Giocatore;
-//import dominio.Partita;
-import dominio.Partita;
 
 
 public class GiocatoreTest {

@@ -1,8 +1,5 @@
 package dominio;
 
-
-
-
 import dominio.Casella;
 
 public class Damiera implements Observer{
@@ -23,7 +20,7 @@ public class Damiera implements Observer{
 	private boolean update = false;
 	private boolean lockMS = false;
 	
-	public Damiera(){
+	private Damiera(){
 		setCaselle();
 	}
 	

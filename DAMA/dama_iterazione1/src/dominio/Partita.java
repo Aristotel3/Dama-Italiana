@@ -24,7 +24,7 @@ public class Partita {
 	private boolean start = true;
 	
 	
-	public Partita(String username1, String username2, boolean test) {
+	private Partita(String username1, String username2, boolean test) {
 		
 		this.d= Damiera.getInstance();
 		

@@ -5,14 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import dominio.Giocatore;
+
 import dominio.Partita;
 
 class PartitaTest {
 	
-	private Partita p = new Partita("nico", "giov", true);
-	
-
+	private Partita p = Partita.getInstance("nico", "giov", true);
 	
 
 	@Test
@@ -34,10 +32,6 @@ class PartitaTest {
 		assertTrue(p.getGiocatore(1).getTurno());
 		assertFalse(p.getGiocatore(0).getTurno());
 	}
-
-	
-
-
 
 
 	@Test

@@ -4,13 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
-
-import org.junit.jupiter.api.BeforeAll;
-
 import dominio.Giocatore;
-import dominio.Partita;
 import dominio.Casella;
 import dominio.Damiera;
 
